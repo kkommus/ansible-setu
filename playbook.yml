@@ -1,0 +1,66 @@
+---
+- name: Kontrolli ja paigalda tarkvara
+  hosts: all
+  tasks:
+    - name: Paigalda vajalikud paketid Debian/Ubuntu süsteemides
+      apt:
+        name:
+          - docker.io
+          - git
+          - snmpd
+          - wget
+          - tree
+          - tmux
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Eemalda konfliktne pakett CentOS süsteemides
+      yum:
+        name: podman-docker
+        state: absent
+      become: yes
+      when: ansible_os_family == "RedHat"
+
+    - name: Paigalda vajalikud paketid CentOS süsteemides
+      yum:
+        name:
+          - docker-ce
+          - git
+          - net-snmp
+          - wget
+          - tree
+          - tmux
+        state: present
+      become: yes
+      when: ansible_os_family == "RedHat"
+
+    - name: Paigalda vajalikud paketid OpenSUSE süsteemides
+      zypper:
+        name:
+          - docker
+          - git
+          - net-snmp
+          - wget
+          - tree
+          - tmux
+        state: present
+      when: ansible_os_family == "Suse"
+
+    - name: Kontrolli installitud pakette
+      shell: |
+        if [ "$(uname -s)" = "Linux" ]; then
+          if [[ "$(cat /etc/os-release)" == *Debian* || "$(cat /etc/os-release)" == *Ubuntu* ]]; then
+            dpkg -l | grep -E "docker.io|git|snmpd|wget|tree|tmux";
+          elif [[ "$(cat /etc/os-release)" == *CentOS* ]]; then
+            rpm -q docker-ce git net-snmp wget tree tmux;
+          elif [[ "$(cat /etc/os-release)" == *openSUSE* ]]; then
+            zypper se -i docker git net-snmp wget tree tmux;
+          fi
+        fi
+      register: pakett_tulemus
+      ignore_errors: yes
+      become: yes
+
+    - name: Kuvab pakettide kontrolli tulemused
+      debug:
+        var: pakett_tulemus.stdout_lines

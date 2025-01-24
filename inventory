@@ -1,0 +1,7 @@
+[virtualmachines]
+10.10.10.130 ansible_ssh_user=vagrant ansible_ssh_private_key_file=/home/vagrant/.ssh/insecure_private_key
+10.10.10.131 ansible_ssh_user=vagrant ansible_ssh_private_key_file=/home/vagrant/.ssh/insecure_private_key
+10.10.10.132 ansible_ssh_user=vagrant ansible_ssh_private_key_file=/home/vagrant/.ssh/insecure_private_key
+10.10.10.133 ansible_ssh_user=vagrant ansible_ssh_private_key_file=/home/vagrant/.ssh/insecure_private_key
+10.10.10.134 ansible_ssh_user=vagrant ansible_ssh_private_key_file=/home/vagrant/.ssh/insecure_private_key
+
